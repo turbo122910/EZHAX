@@ -11,7 +11,7 @@ local lockedTarget = nil
 camera.CameraType = Enum.CameraType.Scriptable
 
 -- 2. CONFIGURATION
-local LOCK_ANGLE = math.cos(math.rad(15)) -- 15 degree cone
+local LOCK_ANGLE = math.cos(math.rad(10)) -- 15 degree cone
 local HEAD_OFFSET = Vector3.new(0, 0, 0)
 
 -- 3. VALIDATION FUNCTIONS
