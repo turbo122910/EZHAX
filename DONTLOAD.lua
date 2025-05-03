@@ -2,7 +2,7 @@
 local txt = Drawing.new("Text")
 txt.Text = "HAX SUITE"
 txt.Size = 150
-txt.Color = Color3.new(9,9,9)
+txt.Color = Color3.new(9,9,0)
 txt.Transparency = 1
 txt.Visible = true
 txt.Center = true
