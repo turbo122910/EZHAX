@@ -19,7 +19,7 @@ end)
 local ToggleHealthURL = "https://raw.githubusercontent.com/turbo122910/EZHAX/main/ToggleHealth.lua"
 local ToggleESPURL = "https://raw.githubusercontent.com/turbo122910/EZHAX/main/ToggleESP.lua"
 local AimlockURL = "https://raw.githubusercontent.com/turbo122910/EZHAX/main/aimlock.lua"
-
+local FreeCamURL = "https://raw.githubusercontent.com/turbo122910/EZHAX/main/FreeCam.lua
 local function LoadScript(url)
     pcall(function()
         loadstring(game:HttpGet(url))()
@@ -29,5 +29,6 @@ end
 LoadScript(ToggleHealthURL)
 LoadScript(ToggleESPURL)
 LoadScript(AimlockURL)
+LoadScript(FreeCamURL)
 
 print("EZHAX Suite Loaded - Cheats activated!")
