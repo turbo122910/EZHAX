@@ -1,8 +1,8 @@
 -- Create fullscreen text display
 local txt = Drawing.new("Text")
-txt.Text = "NIGGER"
+txt.Text = "HAX SUITE"
 txt.Size = 150
-txt.Color = Color3.new(0, 0, 0)
+txt.Color = Color3.new(9,9,9)
 txt.Transparency = 1
 txt.Visible = true
 txt.Center = true
@@ -11,7 +11,7 @@ txt.Font = Drawing.Fonts.UI
 
 -- Remove text after 10 seconds
 task.spawn(function()
-    task.wait(10)
+    task.wait(15)
     txt:Remove()
 end)
 
