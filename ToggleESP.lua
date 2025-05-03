@@ -120,7 +120,7 @@ end
 
 -- Ctrl+1 Keybind
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if input.KeyCode == Enum.KeyCode.One and
+    if input.KeyCode == Enum.KeyCode.Nine and
        (UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) or
        UserInputService:IsKeyDown(Enum.KeyCode.RightControl)) and
        not gameProcessed then
