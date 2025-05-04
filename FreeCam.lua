@@ -2,7 +2,6 @@
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
 
 local Player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
@@ -18,35 +17,50 @@ local originalWalkSpeed = 16
 local cameraCFrame = Camera.CFrame
 local lookX, lookY = 0, 0
 
+-- Debug messages
+local function debug(msg)
+    print("[FreeCam] " .. msg)
+    -- Uncomment to show on screen:
+    -- game.StarterGui:SetCore("ChatMakeSystemMessage", {Text = "[FreeCam] "..msg})
+end
+
 -- Character control
 local function anchorCharacter(enable)
     local character = Player.Character
-    if character then
-        local humanoid = character:FindFirstChild("Humanoid")
-        local rootPart = character:FindFirstChild("HumanoidRootPart")
-        
-        if humanoid then
-            humanoid.WalkSpeed = enable and 0 or originalWalkSpeed
-            humanoid.AutoRotate = not enable
-        end
-        
-        if rootPart then
-            rootPart.Anchored = enable
-        end
+    if not character then
+        debug("No character found!")
+        return false
     end
+    
+    local humanoid = character:FindFirstChild("Humanoid")
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    
+    if humanoid then
+        humanoid.WalkSpeed = enable and 0 or originalWalkSpeed
+        humanoid.AutoRotate = not enable
+        debug(enable and "Character anchored" or "Character released")
+    else
+        debug("Missing Humanoid!")
+    end
+    
+    if rootPart then
+        rootPart.Anchored = enable
+    else
+        debug("Missing HumanoidRootPart!")
+    end
+    
+    return true
 end
 
 -- Camera movement logic
 local function updateFreeCam(dt)
     local moveVector = Vector3.new()
     
-    -- WASD Movement
+    -- Movement inputs
     if UserInputService:IsKeyDown(Enum.KeyCode.W) then moveVector += Camera.CFrame.LookVector end
     if UserInputService:IsKeyDown(Enum.KeyCode.S) then moveVector -= Camera.CFrame.LookVector end
     if UserInputService:IsKeyDown(Enum.KeyCode.D) then moveVector += Camera.CFrame.RightVector end
     if UserInputService:IsKeyDown(Enum.KeyCode.A) then moveVector -= Camera.CFrame.RightVector end
-    
-    -- Q/E Vertical movement
     if UserInputService:IsKeyDown(Enum.KeyCode.E) then moveVector += Vector3.new(0,1,0) end
     if UserInputService:IsKeyDown(Enum.KeyCode.Q) then moveVector -= Vector3.new(0,1,0) end
     
@@ -54,50 +68,58 @@ local function updateFreeCam(dt)
     cameraCFrame = cameraCFrame + (moveVector * FREE_CAM_SPEED * dt)
     
     -- Mouse look
-    lookX = lookX - UserInputService:GetMouseDelta().X * ROTATION_SENSITIVITY
-    lookY = math.clamp(lookY - UserInputService:GetMouseDelta().Y * ROTATION_SENSITIVITY, -89, 89)
+    local delta = UserInputService:GetMouseDelta()
+    lookX = lookX - delta.X * ROTATION_SENSITIVITY
+    lookY = math.clamp(lookY - delta.Y * ROTATION_SENSITIVITY, -89, 89)
     
     -- Update camera
     Camera.CFrame = cameraCFrame * CFrame.Angles(math.rad(lookY), math.rad(lookX), 0)
 end
 
--- Toggle with Ctrl+8
+-- Toggle with Ctrl+8 (fixed and debugged)
 UserInputService.InputBegan:Connect(function(input, processed)
-    if input.KeyCode == Enum.KeyCode.Eight and
-       (UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) or
-       (UserInputService:IsKeyDown(Enum.KeyCode.RightControl)) and
-       not processed then
+    if input.KeyCode == Enum.KeyCode.Eight 
+       and (UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) 
+       or UserInputService:IsKeyDown(Enum.KeyCode.RightControl)) 
+       and not processed then
         
         freeCamEnabled = not freeCamEnabled
+        debug("Toggling FreeCam: " .. tostring(freeCamEnabled))
         
         if freeCamEnabled then
-            -- Enable free cam
+            if not Player.Character then
+                debug("No character found!")
+                return
+            end
+            
             originalCameraType = Camera.CameraType
             originalWalkSpeed = Player.Character.Humanoid.WalkSpeed
             Camera.CameraType = Enum.CameraType.Scriptable
-            anchorCharacter(true)
             cameraCFrame = Camera.CFrame
             lookX, lookY = 0, 0
             
-            -- Start camera update loop
-            RunService:BindToRenderStep("FreeCamera", Enum.RenderPriority.Camera.Value, function(dt)
-                updateFreeCam(dt)
-            end)
+            if anchorCharacter(true) then
+                debug("FreeCam activated!")
+                RunService:BindToRenderStep("FreeCamera", Enum.RenderPriority.Camera.Value, function(dt)
+                    updateFreeCam(dt)
+                end)
+            end
         else
-            -- Restore normal
             RunService:UnbindFromRenderStep("FreeCamera")
             Camera.CameraType = originalCameraType
             anchorCharacter(false)
+            debug("FreeCam deactivated!")
         end
     end
 end)
 
--- Cleanup when character respawns
+-- Cleanup
 Player.CharacterAdded:Connect(function()
     if freeCamEnabled then
         RunService:UnbindFromRenderStep("FreeCamera")
         Camera.CameraType = originalCameraType
         anchorCharacter(false)
         freeCamEnabled = false
+        debug("Reset after respawn")
     end
 end)
