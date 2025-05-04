@@ -1,5 +1,0 @@
-@echo off
-:start
-curl --request POST --url http://[target IP] --data "junk=data"
-ping 127.0.0.1 -n 1 -w 1000 > nul
-goto start￼Enter file contents here
