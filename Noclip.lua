@@ -1,3 +1,19 @@
+local txt = Drawing.new("Text")
+txt.Text = "Fly active"
+txt.Size = 150
+txt.Color = Color3.new(9,9,0)
+txt.Transparency = 1
+txt.Visible = true
+txt.Center = true
+txt.Position = workspace.CurrentCamera.ViewportSize / 2
+txt.Font = Drawing.Fonts.UI
+
+-- Remove text after 10 seconds
+task.spawn(function()
+    task.wait(15)
+    txt:Remove()
+end)
+
 -- LocalScript (Place in StarterPlayerScripts)
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
