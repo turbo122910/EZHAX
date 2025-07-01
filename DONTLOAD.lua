@@ -1,6 +1,6 @@
 -- Create fullscreen text display
 local txt = Drawing.new("Text")
-txt.Text = "HAX SUITE"
+txt.Text = "Giga Nigga Hax"
 txt.Size = 150
 txt.Color = Color3.new(9,9,0)
 txt.Transparency = 1
@@ -31,4 +31,4 @@ LoadScript(ToggleESPURL)
 LoadScript(AimlockURL)
 LoadScript(FreeCamURL)
 
-print("EZHAX Suite Loaded - Cheats activated!")
+print("Giga Nigga HAX Suite Loaded - Cheats activated!")
